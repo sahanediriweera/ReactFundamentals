@@ -6,9 +6,31 @@ import Footer from './Footer';
 import { useState,useEffect } from 'react';
 
 function App() {
-  const [items, setItems] = useState(JSON.parse(localStorage.getItem('shoppinglist'))|| []);
-  const [newItem, setNewItem] = useState('')
-  const [search, setSearch] = useState('')
+  const API_URL = 'http://localhost:3000/items';
+  const [items, setItems] = useState([]);
+  const [newItem, setNewItem] = useState('');
+  const [search, setSearch] = useState('');
+  const [fetchError, setFetError] = useState(null);
+  const [IsLoading,setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchItems = async () => {
+      try{
+        const response = await fetch(API_URL);
+        if(!response.ok) throw Error("Did not recieve this data");
+        const listItems = await response.json();
+        setItems(listItems);
+        setFetError(null);
+      }catch (err){
+        setFetError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    (async ()=> await fetchItems())();
+    
+  },[])
 
   useEffect(()=>{
     localStorage.setItem('shoppinglist', JSON.stringify(items));
@@ -54,11 +76,25 @@ function App() {
         search={search}
         setSearch={setSearch}
       />
-      <Content
-        items={items.filter(item => ((item.item).toLowerCase()).includes(search.toLowerCase()))}
-        handleCheck={handleCheck}
-        handleDelete={handleDelete}
-      />
+      <main>
+        {
+          IsLoading && <p> Items still loading</p>
+        }
+
+        {
+          fetchError && <p style= {{color: 'Red'}}>{`Error ${fetchError}`}</p>
+        }
+        { 
+          fetchError && !IsLoading && <Content
+            items={items.filter(item => ((item.item).toLowerCase()).includes(search.toLowerCase()))}
+            handleCheck={handleCheck}
+            handleDelete={handleDelete}
+          />
+
+        }
+
+      </main>
+
       <Footer length={items.length} />
     </div>
   );
