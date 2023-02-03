@@ -8,10 +8,11 @@ import About from './About';
 import Missing from './Missing';
 import { Route, Switch, useHistory } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { format, set } from 'date-fns';
+import { format } from 'date-fns';
 import api from './api/posts';
 import EditPosts from './EditPosts';
 import useWindowSize from './Hooks/useWindowSize';
+import useAxiosFetch from './Hooks/useAxiosFetch';
 
 function App() {
   const [posts, setPosts] = useState([
@@ -48,6 +49,8 @@ function App() {
   const [editBody,setEditBody] = useState('');
   const history = useHistory();
   const {width} = useWindowSize();
+
+  const  {data,fetchError,isLoading} = useAxiosFetch('http://localhost:3500'); 
 
   useEffect(()=>{
     const fetchPosts = async () => {
@@ -123,7 +126,11 @@ function App() {
       <Nav search={search} setSearch={setSearch} />
       <Switch>
         <Route exact path="/">
-          <Home posts={searchResults} />
+          <Home 
+          posts={searchResults} 
+          fetchError = {fetchError}
+          isLoading = {isLoading}
+          />
         </Route>
         <Route exact path="/post">
           <NewPost
