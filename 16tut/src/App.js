@@ -5,13 +5,14 @@ import NewPost from './NewPost';
 import PostPage from './PostPage';
 import Missing from './Missing';
 import Home from "./Home";
-import {Route, Routes, useHistory} from 'react-router-dom';
+import {BrowserRouter, Route, Routes, useHistory} from 'react-router-dom';
 import { useState,useEffect } from "react";
 import About from "./About";
 
 function App() {
   return (
     <div className="App">
+      <BrowserRouter>
         <Header/>
         <Nav/>
         <Routes>
@@ -22,6 +23,7 @@ function App() {
           <Route path="*" element = {<Missing/>}/>
         </Routes>
         <Footer/>
+      </BrowserRouter>
     </div>
   );
 }
