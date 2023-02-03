@@ -14,7 +14,7 @@ const Form = ({reqType,setReqType}) => {
             setReqType = {setReqType}
         />
         <Button
-            buttonText = "commets"
+            buttonText = "comments"
             reqType = {reqType}
             setReqType = {setReqType}
         />
