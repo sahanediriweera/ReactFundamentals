@@ -36,5 +36,14 @@ export default createStore({
     }),
     savePost:thunk(async (actions,nePost,helpers)=> {
         const {posts} = helpers.getState();
+        try {
+            const response = await api.post('/posts', newPost);
+            actions.setPosts(allPosts);
+            setPostTitle('');
+            setPostBody('');
+            history.push('/');
+        } catch (err) {
+            console.log(`Error: ${err.message}`);
+        }
     })
 })
